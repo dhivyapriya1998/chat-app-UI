@@ -28,7 +28,7 @@ function Login() {
         <FormLabel>Email</FormLabel>
         <Input
           value={mail}
-          placeholder="Enter your Email"
+          placeholder="Enter your mail"
           required
           onChange={(e) => setMail(e.target.value)}
         />
