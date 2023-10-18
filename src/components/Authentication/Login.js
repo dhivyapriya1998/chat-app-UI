@@ -25,7 +25,7 @@ function Login() {
   return (
     <VStack spacing={"8px"}>
       <FormControl isRequired id="mailid">
-        <FormLabel>Email</FormLabel>
+        <FormLabel>Emaill</FormLabel>
         <Input
           value={mail}
           placeholder="Enter your mail"

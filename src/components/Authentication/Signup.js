@@ -44,15 +44,24 @@ function Signup() {
       data.append("cloud_name", "dpriya");
 
       fetch("https://api.cloudinary.com/v1_1/dpriya/image/upload", {
-        mode: "no-cors",
-        method: "post",
+        // mode: "no-cors",
+        method: "POST",
         body: data,
       })
         .then((res) => {
-          return res;
+          if (!res.ok) {
+            throw new Error(res.error.message);
+          }
+          return res.json();
         })
         .then((data) => {
           setLoading(false);
+          toast({
+            title: "Image uploaded!",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
           setPic(data.url.toString());
           console.log(data.url.toString());
         })
