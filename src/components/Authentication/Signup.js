@@ -135,7 +135,7 @@ function Signup() {
         </InputGroup>
       </FormControl>
       <FormControl id="profile-pic">
-        <FormLabel>Upload profile pic</FormLabel>
+        <FormLabel>Upload profile picture</FormLabel>
         <Input
           type="file"
           accept="image/**"
