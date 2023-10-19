@@ -6,31 +6,76 @@ import {
   VStack,
   Button,
   InputGroup,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from "axios";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // eS3YIZrG4LXXSWm3
 // mongodb+srv://dhivyaravi98:<password>@dp-cluster.haskn47.mongodb.net/?retryWrites=true&w=majority
 
 function Login() {
   const [show, setShow] = useState("");
-  const [mail, setMail] = useState("");
+  const [mailId, setMailId] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
+  const history = useHistory()
 
   const handleShow = () => {
     setShow(!show);
   };
 
-  const submitHandler = () => {};
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!mailId || !password) {
+      toast({
+        title: "Please fill all the required fields",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
+      return
+    };
+    const config = {
+      headers: {
+        "content-Type": "application/json"
+      }
+    }
+    try {
+      const { data } = await axios.post(`http://localhost:5000/api/user/login`, { mailId, password }, config);
+      toast({
+        title: "Login successful",
+        status: "success",
+        isClosable: true,
+        duration: 3000
+      });
+      setLoading(false);
+      history.push('/chats')
+    } catch (error) {
+      toast({
+        title: error.message,
+        status: "error",
+        isClosable: true,
+        duration: 3000
+      });
+      setLoading(false);
+    }
+
+
+  };
 
   return (
     <VStack spacing={"8px"}>
       <FormControl isRequired id="mailid">
         <FormLabel>Email</FormLabel>
         <Input
-          value={mail}
+          value={mailId}
           placeholder="Enter your mail"
           required
-          onChange={(e) => setMail(e.target.value)}
+          onChange={(e) => setMailId(e.target.value)}
         />
       </FormControl>
       <FormControl isRequired id="password">
@@ -48,7 +93,7 @@ function Login() {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <Button colorScheme="blue" w={"100%"} mt={"10px"} onClick={submitHandler}>
+      <Button colorScheme="blue" w={"100%"} mt={"10px"} onClick={submitHandler} isLoading={loading} >
         Login
       </Button>
       <Button
@@ -56,8 +101,8 @@ function Login() {
         w={"100%"}
         mt={"10px"}
         onClick={() => {
-          setMail("guest@example.com");
-          setPassword("123098");
+          setMailId("guest@example.com");
+          setPassword("guest@123");
         }}
       >
         Get Guset User Credentials

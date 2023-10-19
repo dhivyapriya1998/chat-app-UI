@@ -9,18 +9,21 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from "axios";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 function Signup() {
   const [show, setShow] = useState(false);
 
   const [name, setName] = useState("");
-  const [mail, setMail] = useState("");
+  const [mailId, setMailId] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [pic, setPic] = useState("");
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
+  const history = useHistory();
 
   const handleShow = () => {
     setShow(!show);
@@ -86,7 +89,58 @@ function Signup() {
     }
   };
 
-  const submitHandler = () => {};
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!mailId || !name || !password || !confirmPassword) {
+      toast({
+        title: "Please fill all the required fields",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
+      return;
+    }
+    if (confirmPassword !== password) {
+      toast({
+        title: "Password didn't match",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+      setLoading(false);
+      return;
+    }
+
+    const config = {
+      headers: {
+        "content-Type": "application/json"
+      }
+    };
+    try {
+      const { data } = await axios.post(`http://localhost:5000/api/user`, {
+        name, mailId, password, pic
+      }, config);
+      toast({
+        title: "Registration successful",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      history.push('/chats');
+
+    } catch (error) {
+      toast({
+        title: error.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+  };
 
   return (
     <VStack spacing={"8px"}>
@@ -103,7 +157,7 @@ function Signup() {
         <Input
           placeholder="Enter your Email"
           required
-          onChange={(e) => setMail(e.target.value)}
+          onChange={(e) => setMailId(e.target.value)}
         />
       </FormControl>
       <FormControl isRequired id="password">
