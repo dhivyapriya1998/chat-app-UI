@@ -19,7 +19,7 @@ function Signup() {
   const [mailId, setMailId] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [pic, setPic] = useState("");
+  const [profilePic, setProfilePic] = useState("");
   const [loading, setLoading] = useState(false);
 
   const toast = useToast();
@@ -65,7 +65,7 @@ function Signup() {
             duration: 3000,
             isClosable: true,
           });
-          setPic(data.url.toString());
+          setProfilePic(data.url.toString());
           console.log(data.url.toString());
         })
         .catch((err) => {
@@ -119,7 +119,7 @@ function Signup() {
     };
     try {
       const { data } = await axios.post(`http://localhost:5000/api/user`, {
-        name, mailId, password, pic
+        name, mailId, password, profilePic
       }, config);
       toast({
         title: "Registration successful",
